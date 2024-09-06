@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/is1ab/Arvosana/internal/service/logger"
+	"github.com/is1ab/Arvosana/service/logger"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"

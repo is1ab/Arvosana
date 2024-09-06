@@ -3,7 +3,7 @@ package logger
 import (
 	"context"
 
-	"github.com/is1ab/Arvosana/internal/env"
+	"github.com/is1ab/Arvosana/env"
 	"go.uber.org/zap"
 )
 

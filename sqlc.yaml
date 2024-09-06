@@ -1,0 +1,18 @@
+version: "2"
+sql:
+  - engine: "sqlite"
+    queries: "db/queries"
+    schema: "db/migrations"
+    database:
+      uri: "sqlite3://${DB}"
+    gen:
+      go:
+        package: "db"
+        out: "service/db"
+        overrides:
+          - column: "homework.created_at"
+            go_type:
+              type: "time.Time"
+          - column: "homework.deadline"
+            go_type:
+              type: "time.Time"

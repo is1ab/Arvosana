@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/is1ab/Arvosana/internal/service"
+	"github.com/is1ab/Arvosana/service"
 )
 
 func main() {
