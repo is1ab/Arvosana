@@ -3,13 +3,13 @@ package db
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"testing"
 	"time"
 
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	"github.com/is1ab/Arvosana/types"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -34,12 +34,13 @@ func TestAddHomework(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	delta := 3 * 24 * time.Hour
 	conn := New(db)
 
 	ctx := context.Background()
 	err = conn.AddHomework(ctx, AddHomeworkParams{
 		Name:     "HW0",
-		Deadline: time.Now().Add(3 * 24 * time.Hour),
+		Deadline: types.NewDatetime(time.Now().Add(delta)),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -50,7 +51,10 @@ func TestAddHomework(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	for _, hw := range hws {
-		fmt.Printf("%+v\n", hw)
+	hw := hws[0]
+	deadline := hw.Deadline.Time()
+	createdAt := hw.CreatedAt.Time()
+	if deadline.Sub(createdAt) != delta {
+		t.Fatalf("")
 	}
 }

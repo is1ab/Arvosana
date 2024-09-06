@@ -6,8 +6,8 @@ CREATE TABLE student (
 CREATE TABLE homework (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
-    created_at INTEGER DEFAULT current_timestamp,
-    deadline INTEGER NOT NULL
+    created_at TEXT NOT NULL,
+    deadline TEXT NOT NULL
 );
 
 CREATE TABLE student_grade (

@@ -12,7 +12,9 @@ sql:
         overrides:
           - column: "homework.created_at"
             go_type:
-              type: "time.Time"
+              import: "github.com/is1ab/Arvosana/types"
+              type: "Datetime"
           - column: "homework.deadline"
             go_type:
-              type: "time.Time"
+              import: "github.com/is1ab/Arvosana/types"
+              type: "Datetime"

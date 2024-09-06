@@ -7,17 +7,18 @@ package db
 
 import (
 	"context"
-	"time"
+
+	"github.com/is1ab/Arvosana/types"
 )
 
 const addHomework = `-- name: AddHomework :exec
-INSERT INTO homework (name, deadline)
-VALUES (?, ?)
+INSERT INTO homework (name, created_at, deadline)
+VALUES (?, datetime('now', 'localtime'), ?)
 `
 
 type AddHomeworkParams struct {
 	Name     string
-	Deadline time.Time
+	Deadline types.Datetime
 }
 
 func (q *Queries) AddHomework(ctx context.Context, arg AddHomeworkParams) error {
@@ -31,8 +32,8 @@ SELECT name, created_at, deadline FROM homework
 
 type GetAllHomeworksRow struct {
 	Name      string
-	CreatedAt time.Time
-	Deadline  time.Time
+	CreatedAt types.Datetime
+	Deadline  types.Datetime
 }
 
 func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, error) {

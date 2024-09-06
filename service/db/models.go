@@ -5,14 +5,14 @@
 package db
 
 import (
-	"time"
+	"github.com/is1ab/Arvosana/types"
 )
 
 type Homework struct {
 	ID        int64
 	Name      string
-	CreatedAt time.Time
-	Deadline  time.Time
+	CreatedAt types.Datetime
+	Deadline  types.Datetime
 }
 
 type Student struct {

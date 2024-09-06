@@ -14,9 +14,9 @@ import (
 )
 
 type Service struct {
-	router    *echo.Echo
-	logger    *zap.SugaredLogger
-	ctx       context.Context
+	router *echo.Echo
+	logger *zap.SugaredLogger
+	ctx    context.Context
 }
 
 func NewService() (*Service, error) {
@@ -55,9 +55,9 @@ func NewService() (*Service, error) {
 	_ = apiGroup
 
 	return &Service{
-		router:    e,
-		logger:    l,
-		ctx:       ctx,
+		router: e,
+		logger: l,
+		ctx:    ctx,
 	}, nil
 }
 
