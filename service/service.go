@@ -86,10 +86,10 @@ func (s *Service) Shutdown() error {
 	defer cancel()
 
 	err2 := s.router.Shutdown(ctx)
-	errors.Join(err, fmt.Errorf("error shutting down: %w", err2))
+	err = errors.Join(err, fmt.Errorf("error shutting down: %w", err2))
 
 	err3 := logger.Close(s.logger)
-	errors.Join(err, fmt.Errorf("error closing logger: %w", err3))
+	err = errors.Join(err, fmt.Errorf("error closing logger: %w", err3))
 
 	return err
 }
