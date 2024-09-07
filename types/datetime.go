@@ -2,6 +2,7 @@ package types
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"time"
 )
@@ -15,7 +16,7 @@ const format = "2006-01-02 15:04:05"
 
 func NewDatetime(t time.Time) Datetime {
 	return Datetime{
-		t: t,
+		t: t.UTC(),
 	}
 }
 
@@ -40,4 +41,8 @@ func (dt *Datetime) Scan(value any) error {
 
 func (dt Datetime) Value() (driver.Value, error) {
 	return dt.t.Format(format), nil
+}
+
+func (dt Datetime) MarshalJSON() ([]byte, error) {
+	return json.Marshal(dt.t.Unix())
 }

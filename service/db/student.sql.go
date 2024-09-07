@@ -17,8 +17,8 @@ VALUES (?, ?)
 `
 
 type AddStudentParams struct {
-	ID       int64
-	Semester types.Semester
+	ID       int64          `json:"id"`
+	Semester types.Semester `json:"semester"`
 }
 
 func (q *Queries) AddStudent(ctx context.Context, arg AddStudentParams) error {

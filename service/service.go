@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/is1ab/Arvosana/api"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
 	"github.com/labstack/echo/v4"
@@ -59,7 +60,7 @@ func NewService() (*Service, error) {
 	}))
 
 	apiGroup := e.Group("/api")
-	_ = apiGroup
+	api.RegisterHomework(apiGroup)
 
 	return &Service{
 		router: e,

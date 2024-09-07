@@ -17,9 +17,9 @@ VALUES (?, ?, ?)
 `
 
 type AddHomeworkParams struct {
-	Name     string
-	Semester types.Semester
-	Deadline types.Datetime
+	Name     string         `json:"name"`
+	Semester types.Semester `json:"semester"`
+	Deadline types.Datetime `json:"deadline"`
 }
 
 func (q *Queries) AddHomework(ctx context.Context, arg AddHomeworkParams) error {
@@ -32,9 +32,9 @@ SELECT name, semester, deadline FROM homework
 `
 
 type GetAllHomeworksRow struct {
-	Name     string
-	Semester types.Semester
-	Deadline types.Datetime
+	Name     string         `json:"name"`
+	Semester types.Semester `json:"semester"`
+	Deadline types.Datetime `json:"deadline"`
 }
 
 func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, error) {

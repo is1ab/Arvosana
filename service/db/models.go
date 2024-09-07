@@ -9,22 +9,22 @@ import (
 )
 
 type Homework struct {
-	ID       int64
-	Name     string
-	Semester types.Semester
-	Deadline types.Datetime
+	ID       int64          `json:"id"`
+	Name     string         `json:"name"`
+	Semester types.Semester `json:"semester"`
+	Deadline types.Datetime `json:"deadline"`
 }
 
 type Student struct {
-	ID        int64
-	StudentID string
-	Semester  types.Semester
+	ID        int64          `json:"id"`
+	StudentID string         `json:"student_id"`
+	Semester  types.Semester `json:"semester"`
 }
 
 type StudentGrade struct {
-	ID         int64
-	StudentID  int64
-	HomeworkID int64
-	CreatedAt  types.Datetime
-	Grade      float64
+	ID         int64          `json:"id"`
+	StudentID  int64          `json:"student_id"`
+	HomeworkID int64          `json:"homework_id"`
+	CreatedAt  types.Datetime `json:"created_at"`
+	Grade      float64        `json:"grade"`
 }

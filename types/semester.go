@@ -2,6 +2,7 @@ package types
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -69,10 +70,6 @@ func (sem Semester) String() string {
 	return strconv.Itoa(sem.year) + string(sem.period)
 }
 
-func (sem Semester) Format() string {
-	return sem.String()
-}
-
 func (sem *Semester) Scan(value any) error {
 	str, ok := value.(string)
 	if !ok {
@@ -84,11 +81,30 @@ func (sem *Semester) Scan(value any) error {
 		return err
 	}
 
-	sem.year = _sem.year
-	sem.period = _sem.period
+	*sem = _sem
 	return nil
 }
 
 func (sem Semester) Value() (driver.Value, error) {
-	return sem.Format(), nil
+	return sem.String(), nil
+}
+
+func (sem *Semester) UnmarshalJSON(b []byte) error {
+	var data string
+	err := json.Unmarshal(b, &data)
+	if err != nil {
+		return err
+	}
+
+	_sem, err := ParseSemester(data)
+	if err != nil {
+		return err
+	}
+
+	*sem = _sem
+	return nil
+}
+
+func (sem Semester) MarshalJSON() ([]byte, error) {
+	return json.Marshal(sem.String())
 }

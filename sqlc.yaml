@@ -9,6 +9,8 @@ sql:
       go:
         package: "db"
         out: "service/db"
+        emit_json_tags: true
+        emit_empty_slices: true
         overrides:
           - column: "student.semester"
             go_type:
