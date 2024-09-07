@@ -7,6 +7,8 @@ package db
 
 import (
 	"context"
+
+	"github.com/is1ab/Arvosana/types"
 )
 
 const addStudent = `-- name: AddStudent :exec
@@ -15,8 +17,8 @@ VALUES (?, ?)
 `
 
 type AddStudentParams struct {
-	ID       string
-	Semester string
+	ID       int64
+	Semester types.Semester
 }
 
 func (q *Queries) AddStudent(ctx context.Context, arg AddStudentParams) error {

@@ -10,6 +10,10 @@ sql:
         package: "db"
         out: "service/db"
         overrides:
+          - column: "student.semester"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "Semester"
           - column: "homework.created_at"
             go_type:
               import: "github.com/is1ab/Arvosana/types"

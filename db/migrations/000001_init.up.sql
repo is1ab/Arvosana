@@ -1,5 +1,7 @@
 CREATE TABLE student (
-    id TEXT UNIQUE NOT NULL,
+    -- https://blog.ploeh.dk/2024/06/03/youll-regret-using-natural-keys/
+    id INTEGER PRIMARY KEY,
+    student_id TEXT UNIQUE NOT NULL,
     semester TEXT NOT NULL
 );
 
@@ -11,7 +13,7 @@ CREATE TABLE homework (
 );
 
 CREATE TABLE student_grade (
-    student_id TEXT NOT NULL,
+    student_id INTEGER NOT NULL,
     homework_id INTEGER NOT NULL,
     grade INTEGER NOT NULL,
 

@@ -16,12 +16,13 @@ type Homework struct {
 }
 
 type Student struct {
-	ID       string
-	Semester string
+	ID        int64
+	StudentID string
+	Semester  types.Semester
 }
 
 type StudentGrade struct {
-	StudentID  string
+	StudentID  int64
 	HomeworkID int64
 	Grade      int64
 }
