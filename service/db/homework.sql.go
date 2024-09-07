@@ -13,7 +13,7 @@ import (
 
 const addHomework = `-- name: AddHomework :exec
 INSERT INTO homework (name, created_at, deadline)
-VALUES (?, datetime('now', 'localtime'), ?)
+VALUES (?, datetime('now'), ?)
 `
 
 type AddHomeworkParams struct {
