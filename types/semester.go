@@ -70,11 +70,6 @@ func (sem Semester) Format() string {
 }
 
 func (sem *Semester) Scan(value any) error {
-	if value == nil {
-		sem = &Semester{}
-		return nil
-	}
-
 	str, ok := value.(string)
 	if !ok {
 		return fmt.Errorf("invalid value type %T: %v", value, value)

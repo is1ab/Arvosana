@@ -24,11 +24,6 @@ func (dt *Datetime) Time() time.Time {
 }
 
 func (dt *Datetime) Scan(value any) error {
-	if value == nil {
-		dt.t = time.Time{}
-		return nil
-	}
-
 	str, ok := value.(string)
 	if !ok {
 		return fmt.Errorf("invalid value type %T: %v", value, value)
