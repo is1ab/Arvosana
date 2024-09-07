@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
@@ -22,8 +23,14 @@ type Service struct {
 func NewService() (*Service, error) {
 	e := echo.New()
 	l := logger.NewLogger()
+	q, err := db.NewQueries()
+	if err != nil {
+		return nil, fmt.Errorf("error connecting to DB")
+	}
 
-	ctx := logger.WithContext(context.Background(), l)
+	ctx := context.Background()
+	ctx = logger.WithContext(ctx, l)
+	ctx = db.WithContext(ctx, q)
 
 	e.Use(mw.CORS())
 
