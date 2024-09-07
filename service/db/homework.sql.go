@@ -12,28 +12,29 @@ import (
 )
 
 const addHomework = `-- name: AddHomework :exec
-INSERT INTO homework (name, created_at, deadline)
-VALUES (?, datetime('now'), ?)
+INSERT INTO homework (name, semester, deadline)
+VALUES (?, ?, ?)
 `
 
 type AddHomeworkParams struct {
 	Name     string
+	Semester types.Semester
 	Deadline types.Datetime
 }
 
 func (q *Queries) AddHomework(ctx context.Context, arg AddHomeworkParams) error {
-	_, err := q.db.ExecContext(ctx, addHomework, arg.Name, arg.Deadline)
+	_, err := q.db.ExecContext(ctx, addHomework, arg.Name, arg.Semester, arg.Deadline)
 	return err
 }
 
 const getAllHomeworks = `-- name: GetAllHomeworks :many
-SELECT name, created_at, deadline FROM homework
+SELECT name, semester, deadline FROM homework
 `
 
 type GetAllHomeworksRow struct {
-	Name      string
-	CreatedAt types.Datetime
-	Deadline  types.Datetime
+	Name     string
+	Semester types.Semester
+	Deadline types.Datetime
 }
 
 func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, error) {
@@ -45,7 +46,7 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 	var items []GetAllHomeworksRow
 	for rows.Next() {
 		var i GetAllHomeworksRow
-		if err := rows.Scan(&i.Name, &i.CreatedAt, &i.Deadline); err != nil {
+		if err := rows.Scan(&i.Name, &i.Semester, &i.Deadline); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

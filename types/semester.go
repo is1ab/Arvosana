@@ -65,8 +65,12 @@ func ParseSemester(value string) (Semester, error) {
 	}, nil
 }
 
-func (sem Semester) Format() string {
+func (sem Semester) String() string {
 	return strconv.Itoa(sem.year) + string(sem.period)
+}
+
+func (sem Semester) Format() string {
+	return sem.String()
 }
 
 func (sem *Semester) Scan(value any) error {

@@ -9,10 +9,10 @@ import (
 )
 
 type Homework struct {
-	ID        int64
-	Name      string
-	CreatedAt types.Datetime
-	Deadline  types.Datetime
+	ID       int64
+	Name     string
+	Semester types.Semester
+	Deadline types.Datetime
 }
 
 type Student struct {
@@ -22,7 +22,9 @@ type Student struct {
 }
 
 type StudentGrade struct {
+	ID         int64
 	StudentID  int64
 	HomeworkID int64
-	Grade      int64
+	CreatedAt  types.Datetime
+	Grade      float64
 }
