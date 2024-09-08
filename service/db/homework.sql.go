@@ -43,7 +43,7 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 		return nil, err
 	}
 	defer rows.Close()
-	var items []GetAllHomeworksRow
+	items := []GetAllHomeworksRow{}
 	for rows.Next() {
 		var i GetAllHomeworksRow
 		if err := rows.Scan(&i.Name, &i.Semester, &i.Deadline); err != nil {

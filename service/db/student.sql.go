@@ -12,16 +12,76 @@ import (
 )
 
 const addStudent = `-- name: AddStudent :exec
-INSERT INTO student (id, semester)
+INSERT INTO student (student_id, semester)
 VALUES (?, ?)
 `
 
 type AddStudentParams struct {
-	ID       int64          `json:"id"`
-	Semester types.Semester `json:"semester"`
+	StudentID string         `json:"student_id"`
+	Semester  types.Semester `json:"semester"`
 }
 
 func (q *Queries) AddStudent(ctx context.Context, arg AddStudentParams) error {
-	_, err := q.db.ExecContext(ctx, addStudent, arg.ID, arg.Semester)
+	_, err := q.db.ExecContext(ctx, addStudent, arg.StudentID, arg.Semester)
 	return err
+}
+
+const getAllStudents = `-- name: GetAllStudents :many
+SELECT student_id, semester FROM student
+`
+
+type GetAllStudentsRow struct {
+	StudentID string         `json:"student_id"`
+	Semester  types.Semester `json:"semester"`
+}
+
+func (q *Queries) GetAllStudents(ctx context.Context) ([]GetAllStudentsRow, error) {
+	rows, err := q.db.QueryContext(ctx, getAllStudents)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetAllStudentsRow{}
+	for rows.Next() {
+		var i GetAllStudentsRow
+		if err := rows.Scan(&i.StudentID, &i.Semester); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getStudentsBySemester = `-- name: GetStudentsBySemester :many
+SELECT student_id FROM student
+WHERE semester = ?
+`
+
+func (q *Queries) GetStudentsBySemester(ctx context.Context, semester types.Semester) ([]string, error) {
+	rows, err := q.db.QueryContext(ctx, getStudentsBySemester, semester)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []string{}
+	for rows.Next() {
+		var student_id string
+		if err := rows.Scan(&student_id); err != nil {
+			return nil, err
+		}
+		items = append(items, student_id)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }

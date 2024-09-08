@@ -1,8 +1,10 @@
 CREATE TABLE student (
     -- https://blog.ploeh.dk/2024/06/03/youll-regret-using-natural-keys/
     id INTEGER PRIMARY KEY,
-    student_id TEXT UNIQUE NOT NULL,
-    semester TEXT NOT NULL
+    student_id TEXT NOT NULL,
+    semester TEXT NOT NULL,
+
+    UNIQUE(student_id, semester)
 );
 
 CREATE TABLE homework (

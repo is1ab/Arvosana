@@ -61,6 +61,8 @@ func NewService() (*Service, error) {
 
 	apiGroup := e.Group("/api")
 	api.RegisterHomework(apiGroup)
+	api.RegisterStudent(apiGroup)
+	api.RegisterGrade(apiGroup)
 
 	return &Service{
 		router: e,

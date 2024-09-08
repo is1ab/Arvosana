@@ -1,0 +1,18 @@
+meta {
+  name: add student
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{BASE_URL}}/student
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "student_id": "110590003",
+    "semester": "2022f"
+  }
+}
