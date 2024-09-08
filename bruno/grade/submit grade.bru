@@ -1,11 +1,11 @@
 meta {
-  name: add student
+  name: submit grade
   type: http
   seq: 1
 }
 
 post {
-  url: {{BASE_URL}}/student
+  url: {{BASE_URL}}/submit
   body: json
   auth: none
 }
@@ -13,6 +13,8 @@ post {
 body:json {
   {
     "student_id": "112590013",
-    "semester": "2024f"
+    "homework_name": "HW0",
+    "semester": "2024f",
+    "grade": 69.420
   }
 }

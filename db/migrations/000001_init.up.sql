@@ -16,7 +16,7 @@ CREATE TABLE homework (
     UNIQUE(name, semester)
 );
 
-CREATE TABLE student_grade (
+CREATE TABLE grade (
     id INTEGER PRIMARY KEY,
     student_id INTEGER NOT NULL,
     homework_id INTEGER NOT NULL,

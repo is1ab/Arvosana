@@ -8,6 +8,14 @@ import (
 	"github.com/is1ab/Arvosana/types"
 )
 
+type Grade struct {
+	ID         int64   `json:"id"`
+	StudentID  int64   `json:"student_id"`
+	HomeworkID int64   `json:"homework_id"`
+	CreatedAt  string  `json:"created_at"`
+	Grade      float64 `json:"grade"`
+}
+
 type Homework struct {
 	ID       int64          `json:"id"`
 	Name     string         `json:"name"`
@@ -19,12 +27,4 @@ type Student struct {
 	ID        int64          `json:"id"`
 	StudentID string         `json:"student_id"`
 	Semester  types.Semester `json:"semester"`
-}
-
-type StudentGrade struct {
-	ID         int64          `json:"id"`
-	StudentID  int64          `json:"student_id"`
-	HomeworkID int64          `json:"homework_id"`
-	CreatedAt  types.Datetime `json:"created_at"`
-	Grade      float64        `json:"grade"`
 }
