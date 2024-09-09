@@ -42,7 +42,7 @@ func TestAddHomework(t *testing.T) {
 	err = conn.AddHomework(ctx, AddHomeworkParams{
 		Name:     "HW0",
 		Semester: types.TimeToSemester(now),
-		Deadline: types.NewDatetime(now.Add(delta)),
+		EndAt:    types.NewDatetime(now.Add(delta)),
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -54,8 +54,8 @@ func TestAddHomework(t *testing.T) {
 	}
 
 	hw := hws[0]
-	deadline := hw.Deadline.Time()
-	if deadline.Sub(now) != delta {
-		t.Fatalf("incorrect result: expect %v, got %v", delta, deadline.Sub(now))
+	endAt := hw.EndAt.Time()
+	if endAt.Sub(now) != delta {
+		t.Fatalf("incorrect result: expect %v, got %v", delta, endAt.Sub(now))
 	}
 }

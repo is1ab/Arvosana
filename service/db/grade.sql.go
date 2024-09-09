@@ -12,9 +12,17 @@ import (
 )
 
 const getSubmitInfo = `-- name: GetSubmitInfo :one
-SELECT student.id AS student_id, homework.id AS homework_id FROM student
+SELECT
+    student.id AS student_id,
+    homework.id AS homework_id,
+    homework.begin_at,
+    homework.end_at
+FROM student
 INNER JOIN homework ON student.semester = homework.semester
-WHERE student.student_id = ? AND student.semester = ? AND homework.name = ?
+WHERE
+    student.student_id = ? AND
+    student.semester = ? AND
+    homework.name = ?
 `
 
 type GetSubmitInfoParams struct {
@@ -24,14 +32,21 @@ type GetSubmitInfoParams struct {
 }
 
 type GetSubmitInfoRow struct {
-	StudentID  int64 `json:"student_id"`
-	HomeworkID int64 `json:"homework_id"`
+	StudentID  int64          `json:"student_id"`
+	HomeworkID int64          `json:"homework_id"`
+	BeginAt    types.Datetime `json:"begin_at"`
+	EndAt      types.Datetime `json:"end_at"`
 }
 
 func (q *Queries) GetSubmitInfo(ctx context.Context, arg GetSubmitInfoParams) (GetSubmitInfoRow, error) {
 	row := q.db.QueryRowContext(ctx, getSubmitInfo, arg.StudentID, arg.Semester, arg.Name)
 	var i GetSubmitInfoRow
-	err := row.Scan(&i.StudentID, &i.HomeworkID)
+	err := row.Scan(
+		&i.StudentID,
+		&i.HomeworkID,
+		&i.BeginAt,
+		&i.EndAt,
+	)
 	return i, err
 }
 

@@ -20,7 +20,11 @@ sql:
             go_type:
               import: "github.com/is1ab/Arvosana/types"
               type: "Semester"
-          - column: "homework.deadline"
+          - column: "homework.begin_at"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "Datetime"
+          - column: "homework.end_at"
             go_type:
               import: "github.com/is1ab/Arvosana/types"
               type: "Datetime"

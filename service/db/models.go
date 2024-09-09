@@ -20,7 +20,8 @@ type Homework struct {
 	ID       int64          `json:"id"`
 	Name     string         `json:"name"`
 	Semester types.Semester `json:"semester"`
-	Deadline types.Datetime `json:"deadline"`
+	BeginAt  types.Datetime `json:"begin_at"`
+	EndAt    types.Datetime `json:"end_at"`
 }
 
 type Student struct {

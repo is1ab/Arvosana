@@ -12,29 +12,36 @@ import (
 )
 
 const addHomework = `-- name: AddHomework :exec
-INSERT INTO homework (name, semester, deadline)
-VALUES (?, ?, ?)
+INSERT INTO homework (name, semester, begin_at, end_at)
+VALUES (?, ?, ?, ?)
 `
 
 type AddHomeworkParams struct {
 	Name     string         `json:"name"`
 	Semester types.Semester `json:"semester"`
-	Deadline types.Datetime `json:"deadline"`
+	BeginAt  types.Datetime `json:"begin_at"`
+	EndAt    types.Datetime `json:"end_at"`
 }
 
 func (q *Queries) AddHomework(ctx context.Context, arg AddHomeworkParams) error {
-	_, err := q.db.ExecContext(ctx, addHomework, arg.Name, arg.Semester, arg.Deadline)
+	_, err := q.db.ExecContext(ctx, addHomework,
+		arg.Name,
+		arg.Semester,
+		arg.BeginAt,
+		arg.EndAt,
+	)
 	return err
 }
 
 const getAllHomeworks = `-- name: GetAllHomeworks :many
-SELECT name, semester, deadline FROM homework
+SELECT name, semester, begin_at, end_at FROM homework
 `
 
 type GetAllHomeworksRow struct {
 	Name     string         `json:"name"`
 	Semester types.Semester `json:"semester"`
-	Deadline types.Datetime `json:"deadline"`
+	BeginAt  types.Datetime `json:"begin_at"`
+	EndAt    types.Datetime `json:"end_at"`
 }
 
 func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, error) {
@@ -46,7 +53,12 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 	items := []GetAllHomeworksRow{}
 	for rows.Next() {
 		var i GetAllHomeworksRow
-		if err := rows.Scan(&i.Name, &i.Semester, &i.Deadline); err != nil {
+		if err := rows.Scan(
+			&i.Name,
+			&i.Semester,
+			&i.BeginAt,
+			&i.EndAt,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

@@ -11,7 +11,8 @@ CREATE TABLE homework (
     id INTEGER PRIMARY KEY,
     name TEXT NOT NULL,
     semester TEXT NOT NULL,
-    deadline TEXT NOT NULL,
+    begin_at TEXT NOT NULL,
+    end_at TEXT NOT NULL,
 
     UNIQUE(name, semester)
 );

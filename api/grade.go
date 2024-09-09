@@ -3,6 +3,7 @@ package api
 import (
 	"errors"
 	"net/http"
+	"time"
 
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
@@ -15,6 +16,7 @@ func RegisterGrade(e *echo.Group) {
 		StudentId    string   `json:"student_id"`
 		HomeworkName string   `json:"homework_name"`
 		Semester     string   `json:"semester"`
+		SubmittedAt  int64    `json:"submitted_at"`
 		Grade        *float64 `json:"grade"` // need to separate actual 0 from null values
 	}
 
@@ -42,6 +44,8 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
+		submittedAt := time.Unix(data.SubmittedAt, 0)
+
 		if data.Grade == nil {
 			return echo.NewHTTPError(http.StatusBadRequest, "grade required")
 		}
@@ -54,6 +58,14 @@ func RegisterGrade(e *echo.Group) {
 		if err != nil {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		if submittedAt.Before(info.BeginAt.Time()) {
+			return echo.NewHTTPError(http.StatusForbidden, "not yet open")
+		}
+
+		if submittedAt.After(info.EndAt.Time()) {
+			return echo.NewHTTPError(http.StatusForbidden, "deadline exceeded")
 		}
 
 		err = q.SubmitGrade(ctx, db.SubmitGradeParams{
