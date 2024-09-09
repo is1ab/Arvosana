@@ -9,3 +9,11 @@ services:
       - .env
     volumes:
       - ./db.sqlite3:/app/db.sqlite3
+
+  migrate:
+    image: migrate/migrate
+    env_file:
+      - .env
+    volumes:
+      - ./db/migrations:/migrations
+    command: -path=/migrations -database=sqlite3://${DB} up
