@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/is1ab/Arvosana/middleware"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
 	"github.com/is1ab/Arvosana/types"
@@ -79,5 +80,5 @@ func RegisterGrade(e *echo.Group) {
 		}
 
 		return c.NoContent(http.StatusCreated)
-	})
+	}, middleware.Protected)
 }
