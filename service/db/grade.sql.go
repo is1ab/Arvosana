@@ -22,6 +22,7 @@ WHERE
     homework.name = ? AND
     homework.semester = ?
 GROUP BY student.id
+ORDER BY student.student_id ASC
 `
 
 type GetGradeInfoParams struct {

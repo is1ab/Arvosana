@@ -1,8 +1,11 @@
 package api
 
 import (
+	"bytes"
+	"encoding/csv"
 	"errors"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/is1ab/Arvosana/middleware"
@@ -23,6 +26,8 @@ func RegisterGrade(e *echo.Group) {
 		l := logger.Ctx(ctx)
 		q := db.Ctx(ctx)
 
+		exportCsv := c.QueryParam("csv") == "1"
+
 		var data GetGradeInfoRequest
 		err := c.Bind(&data)
 		if err != nil {
@@ -34,6 +39,10 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
+		if data.HomeworkName == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "homework_name required")
+		}
+
 		info, err := q.GetGradeInfo(ctx, db.GetGradeInfoParams{
 			Semester: sem,
 			Name:     data.HomeworkName,
@@ -43,8 +52,28 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
-		if data.HomeworkName == "" {
-			return echo.NewHTTPError(http.StatusBadRequest, "homework_name required")
+		if exportCsv {
+			var buf bytes.Buffer
+			writer := csv.NewWriter(&buf)
+
+			err := writer.Write([]string{"Student ID", "Grade"})
+			if err != nil {
+				l.Errorln(err)
+				return echo.NewHTTPError(http.StatusInternalServerError)
+			}
+
+			for _, v := range info {
+				gradeStr := strconv.FormatFloat(v.Grade, 'f', 2, 64)
+				err := writer.Write([]string{v.StudentID, gradeStr})
+				if err != nil {
+					l.Errorln(err)
+					return echo.NewHTTPError(http.StatusInternalServerError)
+				}
+			}
+
+			writer.Flush()
+
+			return c.Blob(http.StatusOK, "text/csv", buf.Bytes())
 		}
 
 		return c.JSON(http.StatusOK, info)

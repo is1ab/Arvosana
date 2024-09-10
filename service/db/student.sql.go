@@ -70,6 +70,7 @@ WHERE
     student.student_id = ? AND
     student.semester = ?
 GROUP BY homework.id
+ORDER BY grade.submitted_at DESC
 `
 
 type GetStudentInfoParams struct {
