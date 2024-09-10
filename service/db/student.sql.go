@@ -69,7 +69,7 @@ INNER JOIN homework ON grade.homework_id = homework.id
 WHERE
     student.student_id = ? AND
     student.semester = ?
-GROUP BY homework.name, homework.semester
+GROUP BY homework.id
 `
 
 type GetStudentInfoParams struct {

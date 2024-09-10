@@ -13,4 +13,16 @@ WHERE
 
 -- name: SubmitGrade :exec
 INSERT INTO grade (student_id, homework_id, submitted_at, grade)
-VALUES (?, ?, ?, ?)
+VALUES (?, ?, ?, ?);
+
+-- name: GetGradeInfo :many
+SELECT
+    student.student_id,
+    CAST(max(grade.grade) AS REAL) AS grade
+FROM grade
+INNER JOIN student ON grade.student_id = student.id
+INNER JOIN homework ON grade.homework_id = homework.id
+WHERE
+    homework.name = ? AND
+    homework.semester = ?
+GROUP BY student.id;

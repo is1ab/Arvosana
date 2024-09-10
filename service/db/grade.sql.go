@@ -11,6 +11,52 @@ import (
 	"github.com/is1ab/Arvosana/types"
 )
 
+const getGradeInfo = `-- name: GetGradeInfo :many
+SELECT
+    student.student_id,
+    CAST(max(grade.grade) AS REAL) AS grade
+FROM grade
+INNER JOIN student ON grade.student_id = student.id
+INNER JOIN homework ON grade.homework_id = homework.id
+WHERE
+    homework.name = ? AND
+    homework.semester = ?
+GROUP BY student.id
+`
+
+type GetGradeInfoParams struct {
+	Name     string         `json:"name"`
+	Semester types.Semester `json:"semester"`
+}
+
+type GetGradeInfoRow struct {
+	StudentID string  `json:"student_id"`
+	Grade     float64 `json:"grade"`
+}
+
+func (q *Queries) GetGradeInfo(ctx context.Context, arg GetGradeInfoParams) ([]GetGradeInfoRow, error) {
+	rows, err := q.db.QueryContext(ctx, getGradeInfo, arg.Name, arg.Semester)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetGradeInfoRow{}
+	for rows.Next() {
+		var i GetGradeInfoRow
+		if err := rows.Scan(&i.StudentID, &i.Grade); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getSubmitInfo = `-- name: GetSubmitInfo :one
 SELECT
     student.id AS student_id,

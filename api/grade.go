@@ -13,6 +13,43 @@ import (
 )
 
 func RegisterGrade(e *echo.Group) {
+	type GetGradeInfoRequest struct {
+		Semester     string `param:"semester"`
+		HomeworkName string `param:"homework_name"`
+	}
+
+	e.GET("/grade/:semester/:homework_name", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		var data GetGradeInfoRequest
+		err := c.Bind(&data)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
+		}
+
+		sem, err := types.ParseSemester(data.Semester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		info, err := q.GetGradeInfo(ctx, db.GetGradeInfoParams{
+			Semester: sem,
+			Name:     data.HomeworkName,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		if data.HomeworkName == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "homework_name required")
+		}
+
+		return c.JSON(http.StatusOK, info)
+	})
+
 	type PostSubmitRequest struct {
 		StudentId    string   `json:"student_id"`
 		HomeworkName string   `json:"homework_name"`
