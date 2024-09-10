@@ -12,5 +12,5 @@ WHERE
     homework.name = ?;
 
 -- name: SubmitGrade :exec
-INSERT INTO grade (student_id, homework_id, created_at, grade)
-VALUES (?, ?, datetime('now'), ?)
+INSERT INTO grade (student_id, homework_id, submitted_at, grade)
+VALUES (?, ?, ?, ?)

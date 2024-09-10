@@ -51,17 +51,23 @@ func (q *Queries) GetSubmitInfo(ctx context.Context, arg GetSubmitInfoParams) (G
 }
 
 const submitGrade = `-- name: SubmitGrade :exec
-INSERT INTO grade (student_id, homework_id, created_at, grade)
-VALUES (?, ?, datetime('now'), ?)
+INSERT INTO grade (student_id, homework_id, submitted_at, grade)
+VALUES (?, ?, ?, ?)
 `
 
 type SubmitGradeParams struct {
-	StudentID  int64   `json:"student_id"`
-	HomeworkID int64   `json:"homework_id"`
-	Grade      float64 `json:"grade"`
+	StudentID   int64          `json:"student_id"`
+	HomeworkID  int64          `json:"homework_id"`
+	SubmittedAt types.Datetime `json:"submitted_at"`
+	Grade       float64        `json:"grade"`
 }
 
 func (q *Queries) SubmitGrade(ctx context.Context, arg SubmitGradeParams) error {
-	_, err := q.db.ExecContext(ctx, submitGrade, arg.StudentID, arg.HomeworkID, arg.Grade)
+	_, err := q.db.ExecContext(ctx, submitGrade,
+		arg.StudentID,
+		arg.HomeworkID,
+		arg.SubmittedAt,
+		arg.Grade,
+	)
 	return err
 }

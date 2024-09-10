@@ -70,9 +70,10 @@ func RegisterGrade(e *echo.Group) {
 		}
 
 		err = q.SubmitGrade(ctx, db.SubmitGradeParams{
-			StudentID:  info.StudentID,
-			HomeworkID: info.HomeworkID,
-			Grade:      *data.Grade,
+			StudentID:   info.StudentID,
+			HomeworkID:  info.HomeworkID,
+			SubmittedAt: types.NewDatetime(submittedAt),
+			Grade:       *data.Grade,
 		})
 		if err != nil {
 			l.Errorln(err)

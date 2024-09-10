@@ -28,7 +28,7 @@ sql:
             go_type:
               import: "github.com/is1ab/Arvosana/types"
               type: "Datetime"
-          - column: "student_grade.created_at"
+          - column: "grade.submitted_at"
             go_type:
               import: "github.com/is1ab/Arvosana/types"
               type: "Datetime"

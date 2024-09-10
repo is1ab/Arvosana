@@ -9,11 +9,11 @@ import (
 )
 
 type Grade struct {
-	ID         int64   `json:"id"`
-	StudentID  int64   `json:"student_id"`
-	HomeworkID int64   `json:"homework_id"`
-	CreatedAt  string  `json:"created_at"`
-	Grade      float64 `json:"grade"`
+	ID          int64          `json:"id"`
+	StudentID   int64          `json:"student_id"`
+	HomeworkID  int64          `json:"homework_id"`
+	SubmittedAt types.Datetime `json:"submitted_at"`
+	Grade       float64        `json:"grade"`
 }
 
 type Homework struct {

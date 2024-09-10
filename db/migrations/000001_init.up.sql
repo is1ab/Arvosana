@@ -21,7 +21,7 @@ CREATE TABLE grade (
     id INTEGER PRIMARY KEY,
     student_id INTEGER NOT NULL,
     homework_id INTEGER NOT NULL,
-    created_at TEXT NOT NULL,
+    submitted_at TEXT NOT NULL,
     grade REAL NOT NULL,
 
     FOREIGN KEY (student_id) REFERENCES student (id),

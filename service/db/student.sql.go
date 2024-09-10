@@ -58,6 +58,54 @@ func (q *Queries) GetAllStudents(ctx context.Context) ([]GetAllStudentsRow, erro
 	return items, nil
 }
 
+const getStudentInfo = `-- name: GetStudentInfo :many
+SELECT
+    homework.name,
+    grade.submitted_at,
+    CAST(max(grade.grade) AS REAL) AS grade
+FROM grade
+INNER JOIN student ON grade.student_id = student.id
+INNER JOIN homework ON grade.homework_id = homework.id
+WHERE
+    student.student_id = ? AND
+    student.semester = ?
+GROUP BY homework.name, homework.semester
+`
+
+type GetStudentInfoParams struct {
+	StudentID string         `json:"student_id"`
+	Semester  types.Semester `json:"semester"`
+}
+
+type GetStudentInfoRow struct {
+	Name        string         `json:"name"`
+	SubmittedAt types.Datetime `json:"submitted_at"`
+	Grade       float64        `json:"grade"`
+}
+
+func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) ([]GetStudentInfoRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStudentInfo, arg.StudentID, arg.Semester)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetStudentInfoRow{}
+	for rows.Next() {
+		var i GetStudentInfoRow
+		if err := rows.Scan(&i.Name, &i.SubmittedAt, &i.Grade); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getStudentsBySemester = `-- name: GetStudentsBySemester :many
 SELECT student_id FROM student
 WHERE semester = ?
