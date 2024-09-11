@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/is1ab/Arvosana/middleware"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
 	"github.com/is1ab/Arvosana/types"
@@ -29,7 +30,8 @@ func RegisterHomework(e *echo.Group) {
 	type PostHomeworkRequest struct {
 		Name     string `json:"name"`
 		Semester string `json:"semester"`
-		Deadline int64  `json:"deadline"`
+		BeginAt  int64  `json:"begin_at"`
+		EndAt    int64  `json:"end_at"`
 	}
 
 	e.POST("/homework", func(c echo.Context) error {
@@ -48,12 +50,14 @@ func RegisterHomework(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
-		t := time.Unix(data.Deadline, 0)
+		beginAt := time.Unix(data.BeginAt, 0)
+		endAt := time.Unix(data.EndAt, 0)
 
 		err = q.AddHomework(ctx, db.AddHomeworkParams{
 			Name:     data.Name,
 			Semester: sem,
-			Deadline: types.NewDatetime(t),
+			BeginAt:  types.NewDatetime(beginAt),
+			EndAt:    types.NewDatetime(endAt),
 		})
 		if err != nil {
 			l.Errorln(err)
@@ -61,5 +65,5 @@ func RegisterHomework(e *echo.Group) {
 		}
 
 		return c.NoContent(http.StatusCreated)
-	})
+	}, middleware.Protected)
 }
