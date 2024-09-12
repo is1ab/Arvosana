@@ -10,6 +10,7 @@ import (
 	"github.com/is1ab/Arvosana/api"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
+	"github.com/is1ab/Arvosana/web"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
 	"go.uber.org/zap"
@@ -63,6 +64,9 @@ func NewService() (*Service, error) {
 	api.RegisterHomework(apiGroup)
 	api.RegisterStudent(apiGroup)
 	api.RegisterGrade(apiGroup)
+
+	webGroup := e.Group("")
+	web.RegisterRouter(webGroup)
 
 	return &Service{
 		router: e,
