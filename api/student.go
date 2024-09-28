@@ -118,4 +118,89 @@ func RegisterStudent(e *echo.Group) {
 
 		return c.NoContent(http.StatusCreated)
 	}, middleware.Protected)
+
+	type UpdateStudentRequest struct {
+		OldSemester  string `param:"old_semester"`
+		OldStudentId string `param:"old_student_id"`
+		NewSemester  string `json:"new_semester"`
+		NewStudentId string `json:"new_student_id"`
+	}
+
+	e.PUT("/student/:old_semester/:old_student_id", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		var data UpdateStudentRequest
+		err := c.Bind(&data)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
+		}
+
+		old_sem, err := types.ParseSemester(data.OldSemester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		if data.OldStudentId == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "old_student_id required")
+		}
+
+		new_sem, err := types.ParseSemester(data.NewSemester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		if data.NewStudentId == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "new_student_id required")
+		}
+
+		err = q.UpdateStudent(ctx, db.UpdateStudentParams{
+			OldSemester:  old_sem,
+			OldStudendID: data.OldStudentId,
+			NewSemester:  new_sem,
+			NewStudentID: data.NewStudentId,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+		return c.NoContent(http.StatusCreated)
+	}, middleware.Protected)
+
+	type DeleteStudentRequest struct {
+		Semester  string `param:"semester"`
+		StudentId string `param:"student_id"`
+	}
+
+	e.DELETE("/student/:semester/:student_id", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		var data DeleteStudentRequest
+		err := c.Bind(&data)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
+		}
+
+		sem, err := types.ParseSemester(data.Semester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		if data.StudentId == "" {
+			return echo.NewHTTPError(http.StatusBadRequest, "student_id required")
+		}
+
+		err = q.DeleteStudent(ctx, db.DeleteStudentParams{
+			Semester:  sem,
+			StudentID: data.StudentId,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+		return c.NoContent(http.StatusOK)
+	})
 }

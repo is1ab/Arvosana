@@ -26,6 +26,22 @@ func (q *Queries) AddStudent(ctx context.Context, arg AddStudentParams) error {
 	return err
 }
 
+const deleteStudent = `-- name: DeleteStudent :exec
+PRAGMA foreign_keys = ON;
+DELETE FROM student
+WHERE student_id = ? AND semester = ?
+`
+
+type DeleteStudentParams struct {
+	StudentID string         `json:"student_id"`
+	Semester  types.Semester `json:"semester"`
+}
+
+func (q *Queries) DeleteStudent(ctx context.Context, arg DeleteStudentParams) error {
+	_, err := q.db.ExecContext(ctx, deleteStudent, arg.StudentID, arg.Semester)
+	return err
+}
+
 const getAllStudents = `-- name: GetAllStudents :many
 SELECT student_id, semester FROM student
 `
@@ -133,4 +149,30 @@ func (q *Queries) GetStudentsBySemester(ctx context.Context, semester types.Seme
 		return nil, err
 	}
 	return items, nil
+}
+
+const updateStudent = `-- name: UpdateStudent :exec
+UPDATE student
+SET
+    student_id = ?1,
+    semester = ?2
+WHERE
+    student_id = ?3 AND semester = ?4
+`
+
+type UpdateStudentParams struct {
+	NewStudentID string         `json:"new_student_id"`
+	NewSemester  types.Semester `json:"new_semester"`
+	OldStudendID string         `json:"old_studend_id"`
+	OldSemester  types.Semester `json:"old_semester"`
+}
+
+func (q *Queries) UpdateStudent(ctx context.Context, arg UpdateStudentParams) error {
+	_, err := q.db.ExecContext(ctx, updateStudent,
+		arg.NewStudentID,
+		arg.NewSemester,
+		arg.OldStudendID,
+		arg.OldSemester,
+	)
+	return err
 }

@@ -24,6 +24,6 @@ CREATE TABLE grade (
     submitted_at TEXT NOT NULL,
     grade REAL NOT NULL,
 
-    FOREIGN KEY (student_id) REFERENCES student (id),
-    FOREIGN KEY (homework_id) REFERENCES homework (id)
+    FOREIGN KEY (student_id) REFERENCES student (id) ON DELETE CASCADE,
+    FOREIGN KEY (homework_id) REFERENCES homework (id) ON DELETE CASCADE
 );

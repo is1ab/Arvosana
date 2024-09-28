@@ -2,6 +2,20 @@
 INSERT INTO student (student_id, semester)
 VALUES (?, ?);
 
+-- name: UpdateStudent :exec
+UPDATE student
+SET
+    student_id = @new_student_id,
+    semester = @new_semester
+WHERE
+    student_id = @old_studend_id AND semester = @old_semester;
+
+
+-- name: DeleteStudent :exec
+PRAGMA foreign_keys = ON;
+DELETE FROM student
+WHERE student_id = ? AND semester = ?;
+
 -- name: GetAllStudents :many
 SELECT student_id, semester FROM student;
 

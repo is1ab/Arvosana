@@ -71,3 +71,37 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 	}
 	return items, nil
 }
+
+const getHomeworksFromSemester = `-- name: GetHomeworksFromSemester :many
+SELECT name, begin_at, end_at FROM homework
+WHERE semester = ?
+`
+
+type GetHomeworksFromSemesterRow struct {
+	Name    string         `json:"name"`
+	BeginAt types.Datetime `json:"begin_at"`
+	EndAt   types.Datetime `json:"end_at"`
+}
+
+func (q *Queries) GetHomeworksFromSemester(ctx context.Context, semester types.Semester) ([]GetHomeworksFromSemesterRow, error) {
+	rows, err := q.db.QueryContext(ctx, getHomeworksFromSemester, semester)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetHomeworksFromSemesterRow{}
+	for rows.Next() {
+		var i GetHomeworksFromSemesterRow
+		if err := rows.Scan(&i.Name, &i.BeginAt, &i.EndAt); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
