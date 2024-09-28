@@ -1,0 +1,35 @@
+package pages
+
+import (
+	"github.com/is1ab/Arvosana/types"
+	"time"
+)
+
+type Homework struct {
+	Name    string
+	BeginAt types.Datetime
+	EndAt   types.Datetime
+}
+
+templ Homeworks(hws []Homework) {
+	<div class="mx-auto max-w-3xl">
+		<table class="w-full table-auto text-left">
+			<thead>
+				<tr>
+					<th>Name</th>
+					<th>Begin</th>
+					<th>End</th>
+				</tr>
+			</thead>
+			<tbody>
+				for _, hw := range hws {
+					<tr>
+						<td>{ hw.Name }</td>
+						<td>{ hw.BeginAt.Time().Local().Format(time.DateTime) }</td>
+						<td>{ hw.EndAt.Time().Local().Format(time.DateTime) }</td>
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}
