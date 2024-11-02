@@ -1,16 +1,11 @@
 package web
 
 import (
-	"embed"
-	"net/http"
 	"strings"
 
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
 )
-
-//go:embed build/*
-var output embed.FS
 
 func RegisterFrontend(e *echo.Group) {
 	e.Use(mw.StaticWithConfig(mw.StaticConfig{
@@ -25,8 +20,7 @@ func RegisterFrontend(e *echo.Group) {
 
 			return false
 		},
-		Root:       "build",
-		Filesystem: http.FS(output),
-		HTML5:      true,
+		Root:  "web/build",
+		HTML5: true,
 	}))
 }
