@@ -29,5 +29,16 @@ export default ts.config(
 	},
 	{
 		ignores: ['build/', '.svelte-kit/', 'dist/']
+	},
+	{
+		rules: {
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					// allow $$Generic $$Events $$Props $$Slots
+					varsIgnorePattern: '^_|\\$\\$(Props|Events|Slots|Generic)$'
+				}
+			]
+		}
 	}
 );
