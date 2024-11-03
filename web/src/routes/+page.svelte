@@ -6,27 +6,34 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<Table.Root>
-	<Table.Header>
-		<Table.Row>
-			<Table.Head>Student ID</Table.Head>
-			<Table.Head>Grade</Table.Head>
-		</Table.Row>
-	</Table.Header>
+<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
+	{data.data.semester.toUpperCase()}
+	{data.data.name}
+</h1>
 
-	<Table.Body>
-		{#each data.info as i}
+<div class="my-6 w-full">
+	<Table.Root>
+		<Table.Header>
 			<Table.Row>
-				<Table.Cell>
-					<a
-						href={`/${data.semester}/${i.student_id}`}
-						class="text-primary underline hover:text-primary/70"
-					>
-						{i.student_id}
-					</a>
-				</Table.Cell>
-				<Table.Cell>{i.grade}</Table.Cell>
+				<Table.Head>Student ID</Table.Head>
+				<Table.Head>Grade</Table.Head>
 			</Table.Row>
-		{/each}
-	</Table.Body>
-</Table.Root>
+		</Table.Header>
+
+		<Table.Body>
+			{#each data.data.info as i}
+				<Table.Row>
+					<Table.Cell>
+						<a
+							href={`/${data.data.semester}/${i.student_id}`}
+							class="text-primary underline hover:text-primary/70"
+						>
+							{i.student_id}
+						</a>
+					</Table.Cell>
+					<Table.Cell>{i.grade}</Table.Cell>
+				</Table.Row>
+			{/each}
+		</Table.Body>
+	</Table.Root>
+</div>

@@ -5,12 +5,15 @@ type GradeInfo = {
 	grade: number;
 };
 
+type LatestData = {
+	semester: string;
+	name: string;
+	info: GradeInfo[];
+};
+
 export const load: PageLoad = async ({ fetch }) => {
-	const t = new Date();
-	const semester = `${t.getFullYear()}${t.getMonth() > 9 ? 'f' : 's'}`;
+	const res = await fetch(`/api/grade/latest`);
+	const data: LatestData = await res.json();
 
-	const res = await fetch(`/api/grade/${semester}/HW0`);
-	const info: GradeInfo[] = await res.json();
-
-	return { info, semester };
+	return { data };
 };
