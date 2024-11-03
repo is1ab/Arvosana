@@ -77,16 +77,19 @@ func (q *Queries) GetAllStudents(ctx context.Context) ([]GetAllStudentsRow, erro
 const getStudentInfo = `-- name: GetStudentInfo :many
 SELECT
     homework.name,
-    grade.submitted_at,
-    CAST(max(grade.grade) AS REAL) AS grade
-FROM grade
-INNER JOIN student ON grade.student_id = student.id
-INNER JOIN homework ON grade.homework_id = homework.id
+    -- FIX: null value breaks this
+    -- grade.submitted_at
+    grade.grade
+FROM homework
+CROSS JOIN student
+LEFT JOIN grade ON
+    homework.id = grade.homework_id AND
+    student.id = grade.student_id
 WHERE
     student.student_id = ? AND
     student.semester = ?
 GROUP BY homework.id
-ORDER BY grade.submitted_at DESC
+ORDER BY homework.begin_at DESC
 `
 
 type GetStudentInfoParams struct {
@@ -95,9 +98,8 @@ type GetStudentInfoParams struct {
 }
 
 type GetStudentInfoRow struct {
-	Name        string         `json:"name"`
-	SubmittedAt types.Datetime `json:"submitted_at"`
-	Grade       float64        `json:"grade"`
+	Name  string            `json:"name"`
+	Grade types.NullFloat64 `json:"grade"`
 }
 
 func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) ([]GetStudentInfoRow, error) {
@@ -109,7 +111,7 @@ func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) 
 	items := []GetStudentInfoRow{}
 	for rows.Next() {
 		var i GetStudentInfoRow
-		if err := rows.Scan(&i.Name, &i.SubmittedAt, &i.Grade); err != nil {
+		if err := rows.Scan(&i.Name, &i.Grade); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

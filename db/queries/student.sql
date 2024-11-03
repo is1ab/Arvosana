@@ -26,13 +26,16 @@ WHERE semester = ?;
 -- name: GetStudentInfo :many
 SELECT
     homework.name,
-    grade.submitted_at,
-    CAST(max(grade.grade) AS REAL) AS grade
-FROM grade
-INNER JOIN student ON grade.student_id = student.id
-INNER JOIN homework ON grade.homework_id = homework.id
+    -- FIX: null value breaks this
+    -- grade.submitted_at
+    grade.grade
+FROM homework
+CROSS JOIN student
+LEFT JOIN grade ON
+    homework.id = grade.homework_id AND
+    student.id = grade.student_id
 WHERE
     student.student_id = ? AND
     student.semester = ?
 GROUP BY homework.id
-ORDER BY grade.submitted_at DESC;
+ORDER BY homework.begin_at DESC;

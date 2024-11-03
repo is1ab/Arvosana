@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 )
 
+// TODO: implement NullDatetime
+
 type NullFloat64 struct {
 	sql.NullFloat64
 }
