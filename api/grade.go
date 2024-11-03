@@ -21,6 +21,53 @@ func RegisterGrade(e *echo.Group) {
 		HomeworkName string `param:"homework_name"`
 	}
 
+	e.GET("/grade/latest", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		now := time.Now()
+		sem := types.TimeToSemester(now)
+
+		hws, err := q.GetHomeworksFromSemester(ctx, sem)
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		name := ""
+		// find most recently started homework
+		for _, hw := range hws {
+			l.Debugln(hw.Name)
+			if now.Compare(hw.BeginAt.Time()) > 0 {
+				name = hw.Name
+				break
+			}
+		}
+
+		if name == "" {
+			l.Errorln("no recent homeworks")
+			return echo.NewHTTPError(http.StatusNotFound)
+		}
+
+		info, err := q.GetGradeInfo(ctx, db.GetGradeInfoParams{
+			Semester: sem,
+			Name:     name,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		data := map[string]any{
+			"semester": sem,
+			"name":     name,
+			"info":     info,
+		}
+
+		return c.JSON(http.StatusOK, data)
+	})
+
 	e.GET("/grade/:semester/:homework_name", func(c echo.Context) error {
 		ctx := c.Request().Context()
 		l := logger.Ctx(ctx)

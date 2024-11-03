@@ -35,6 +35,7 @@ func (q *Queries) AddHomework(ctx context.Context, arg AddHomeworkParams) error 
 
 const getAllHomeworks = `-- name: GetAllHomeworks :many
 SELECT name, semester, begin_at, end_at FROM homework
+ORDER BY begin_at DESC
 `
 
 type GetAllHomeworksRow struct {
@@ -75,6 +76,7 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 const getHomeworksFromSemester = `-- name: GetHomeworksFromSemester :many
 SELECT name, begin_at, end_at FROM homework
 WHERE semester = ?
+ORDER BY begin_at DESC
 `
 
 type GetHomeworksFromSemesterRow struct {
