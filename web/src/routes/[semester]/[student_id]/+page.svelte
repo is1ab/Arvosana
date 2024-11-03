@@ -6,20 +6,27 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<Table.Root>
-	<Table.Header>
-		<Table.Row>
-			<Table.Head>Homework</Table.Head>
-			<Table.Head>Grade</Table.Head>
-		</Table.Row>
-	</Table.Header>
+<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
+	{data.data.semester.toUpperCase()}
+	{data.data.student_id}
+</h1>
 
-	<Table.Body>
-		{#each data.info as i}
+<div class="my-6 w-full">
+	<Table.Root>
+		<Table.Header>
 			<Table.Row>
-				<Table.Cell>{i.name}</Table.Cell>
-				<Table.Cell>{i.grade}</Table.Cell>
+				<Table.Head>Homework</Table.Head>
+				<Table.Head>Grade</Table.Head>
 			</Table.Row>
-		{/each}
-	</Table.Body>
-</Table.Root>
+		</Table.Header>
+
+		<Table.Body>
+			{#each data.data.info as i}
+				<Table.Row>
+					<Table.Cell>{i.name}</Table.Cell>
+					<Table.Cell>{i.grade}</Table.Cell>
+				</Table.Row>
+			{/each}
+		</Table.Body>
+	</Table.Root>
+</div>
