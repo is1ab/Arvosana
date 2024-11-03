@@ -18,12 +18,14 @@ VALUES (?, ?, ?, ?);
 -- name: GetGradeInfo :many
 SELECT
     student.student_id,
-    CAST(max(grade.grade) AS REAL) AS grade
-FROM grade
-INNER JOIN student ON grade.student_id = student.id
-INNER JOIN homework ON grade.homework_id = homework.id
+    grade.grade
+FROM homework
+CROSS JOIN student
+LEFT JOIN grade ON
+    homework.id = grade.homework_id AND
+    student.id = grade.student_id
 WHERE
-    homework.name = ? AND
-    homework.semester = ?
+    homework.semester = ? AND
+    homework.name = ?
 GROUP BY student.id
 ORDER BY student.student_id ASC;

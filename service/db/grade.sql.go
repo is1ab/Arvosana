@@ -14,29 +14,31 @@ import (
 const getGradeInfo = `-- name: GetGradeInfo :many
 SELECT
     student.student_id,
-    CAST(max(grade.grade) AS REAL) AS grade
-FROM grade
-INNER JOIN student ON grade.student_id = student.id
-INNER JOIN homework ON grade.homework_id = homework.id
+    grade.grade
+FROM homework
+CROSS JOIN student
+LEFT JOIN grade ON
+    homework.id = grade.homework_id AND
+    student.id = grade.student_id
 WHERE
-    homework.name = ? AND
-    homework.semester = ?
+    homework.semester = ? AND
+    homework.name = ?
 GROUP BY student.id
 ORDER BY student.student_id ASC
 `
 
 type GetGradeInfoParams struct {
-	Name     string         `json:"name"`
 	Semester types.Semester `json:"semester"`
+	Name     string         `json:"name"`
 }
 
 type GetGradeInfoRow struct {
-	StudentID string  `json:"student_id"`
-	Grade     float64 `json:"grade"`
+	StudentID string            `json:"student_id"`
+	Grade     types.NullFloat64 `json:"grade"`
 }
 
 func (q *Queries) GetGradeInfo(ctx context.Context, arg GetGradeInfoParams) ([]GetGradeInfoRow, error) {
-	rows, err := q.db.QueryContext(ctx, getGradeInfo, arg.Name, arg.Semester)
+	rows, err := q.db.QueryContext(ctx, getGradeInfo, arg.Semester, arg.Name)
 	if err != nil {
 		return nil, err
 	}

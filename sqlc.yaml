@@ -12,6 +12,11 @@ sql:
         emit_json_tags: true
         emit_empty_slices: true
         overrides:
+          - db_type: "REAL"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "NullFloat64"
+            nullable: true
           - column: "student.semester"
             go_type:
               import: "github.com/is1ab/Arvosana/types"

@@ -110,7 +110,10 @@ func RegisterGrade(e *echo.Group) {
 			}
 
 			for _, v := range info {
-				gradeStr := strconv.FormatFloat(v.Grade, 'f', 2, 64)
+				gradeStr := ""
+				if v.Grade.Valid {
+					gradeStr = strconv.FormatFloat(v.Grade.Float64, 'f', 2, 64)
+				}
 				err := writer.Write([]string{v.StudentID, gradeStr})
 				if err != nil {
 					l.Errorln(err)
