@@ -83,6 +83,10 @@ func RegisterStudent(e *echo.Group) {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
+		if len(info) == 0 {
+			return echo.NewHTTPError(http.StatusNotFound)
+		}
+
 		return c.JSON(http.StatusOK, info)
 	})
 

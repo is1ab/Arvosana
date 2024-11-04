@@ -16,11 +16,6 @@ import (
 )
 
 func RegisterGrade(e *echo.Group) {
-	type GetGradeInfoRequest struct {
-		Semester     string `param:"semester"`
-		HomeworkName string `param:"homework_name"`
-	}
-
 	e.GET("/grade/latest", func(c echo.Context) error {
 		ctx := c.Request().Context()
 		l := logger.Ctx(ctx)
@@ -68,6 +63,11 @@ func RegisterGrade(e *echo.Group) {
 		return c.JSON(http.StatusOK, data)
 	})
 
+	type GetGradeInfoRequest struct {
+		Semester     string `param:"semester"`
+		HomeworkName string `param:"homework_name"`
+	}
+
 	e.GET("/grade/:semester/:homework_name", func(c echo.Context) error {
 		ctx := c.Request().Context()
 		l := logger.Ctx(ctx)
@@ -86,10 +86,6 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
-		if data.HomeworkName == "" {
-			return echo.NewHTTPError(http.StatusBadRequest, "homework_name required")
-		}
-
 		info, err := q.GetGradeInfo(ctx, db.GetGradeInfoParams{
 			Semester: sem,
 			Name:     data.HomeworkName,
@@ -97,6 +93,9 @@ func RegisterGrade(e *echo.Group) {
 		if err != nil {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+		if len(info) == 0 {
+			return echo.NewHTTPError(http.StatusNotFound)
 		}
 
 		if exportCsv {
