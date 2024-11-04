@@ -87,7 +87,8 @@ LEFT JOIN grade ON
     student.id = grade.student_id
 WHERE
     student.student_id = ? AND
-    student.semester = ?
+    student.semester = ? AND
+    homework.begin_at < ?
 GROUP BY homework.id
 ORDER BY homework.begin_at DESC
 `
@@ -95,6 +96,7 @@ ORDER BY homework.begin_at DESC
 type GetStudentInfoParams struct {
 	StudentID string         `json:"student_id"`
 	Semester  types.Semester `json:"semester"`
+	Before    types.Datetime `json:"before"`
 }
 
 type GetStudentInfoRow struct {
@@ -103,7 +105,7 @@ type GetStudentInfoRow struct {
 }
 
 func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) ([]GetStudentInfoRow, error) {
-	rows, err := q.db.QueryContext(ctx, getStudentInfo, arg.StudentID, arg.Semester)
+	rows, err := q.db.QueryContext(ctx, getStudentInfo, arg.StudentID, arg.Semester, arg.Before)
 	if err != nil {
 		return nil, err
 	}

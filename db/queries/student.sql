@@ -36,6 +36,7 @@ LEFT JOIN grade ON
     student.id = grade.student_id
 WHERE
     student.student_id = ? AND
-    student.semester = ?
+    student.semester = ? AND
+    homework.begin_at < @before
 GROUP BY homework.id
 ORDER BY homework.begin_at DESC;
