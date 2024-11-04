@@ -23,8 +23,15 @@
 		<Table.Body>
 			{#each data.data.info as i}
 				<Table.Row>
-					<Table.Cell>{i.name}</Table.Cell>
-					<Table.Cell>{i.grade}</Table.Cell>
+					<Table.Cell>
+						<a
+							href={`/homework/${data.data.semester}/${i.name}`}
+							class="text-primary underline hover:text-primary/70"
+						>
+							{i.name}
+						</a>
+					</Table.Cell>
+					<Table.Cell>{i.grade ?? 'Not submitted'}</Table.Cell>
 				</Table.Row>
 			{/each}
 		</Table.Body>

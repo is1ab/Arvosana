@@ -2,7 +2,7 @@ import type { PageLoad } from './$types';
 
 type GradeInfo = {
 	student_id: string;
-	grade: number;
+	grade: number | null;
 };
 
 type LatestData = {
