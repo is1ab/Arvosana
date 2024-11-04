@@ -77,8 +77,7 @@ func (q *Queries) GetAllStudents(ctx context.Context) ([]GetAllStudentsRow, erro
 const getStudentInfo = `-- name: GetStudentInfo :many
 SELECT
     homework.name,
-    -- FIX: null value breaks this
-    -- grade.submitted_at
+    grade.submitted_at,
     grade.grade
 FROM homework
 CROSS JOIN student
@@ -100,8 +99,9 @@ type GetStudentInfoParams struct {
 }
 
 type GetStudentInfoRow struct {
-	Name  string            `json:"name"`
-	Grade types.NullFloat64 `json:"grade"`
+	Name        string             `json:"name"`
+	SubmittedAt types.NullDatetime `json:"submitted_at"`
+	Grade       types.NullFloat64  `json:"grade"`
 }
 
 func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) ([]GetStudentInfoRow, error) {
@@ -113,7 +113,7 @@ func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) 
 	items := []GetStudentInfoRow{}
 	for rows.Next() {
 		var i GetStudentInfoRow
-		if err := rows.Scan(&i.Name, &i.Grade); err != nil {
+		if err := rows.Scan(&i.Name, &i.SubmittedAt, &i.Grade); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

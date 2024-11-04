@@ -26,8 +26,7 @@ WHERE semester = ?;
 -- name: GetStudentInfo :many
 SELECT
     homework.name,
-    -- FIX: null value breaks this
-    -- grade.submitted_at
+    grade.submitted_at,
     grade.grade
 FROM homework
 CROSS JOIN student

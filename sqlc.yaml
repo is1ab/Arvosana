@@ -17,23 +17,23 @@ sql:
               import: "github.com/is1ab/Arvosana/types"
               type: "NullFloat64"
             nullable: true
-          - column: "student.semester"
+
+          - db_type: "DATETIME_TEXT"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "Datetime"
+          - db_type: "DATETIME_TEXT"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "NullDatetime"
+            nullable: true
+
+          - db_type: "SEMESTER_TEXT"
             go_type:
               import: "github.com/is1ab/Arvosana/types"
               type: "Semester"
-          - column: "homework.semester"
+          - db_type: "SEMESTER_TEXT"
             go_type:
               import: "github.com/is1ab/Arvosana/types"
-              type: "Semester"
-          - column: "homework.begin_at"
-            go_type:
-              import: "github.com/is1ab/Arvosana/types"
-              type: "Datetime"
-          - column: "homework.end_at"
-            go_type:
-              import: "github.com/is1ab/Arvosana/types"
-              type: "Datetime"
-          - column: "grade.submitted_at"
-            go_type:
-              import: "github.com/is1ab/Arvosana/types"
-              type: "Datetime"
+              type: "NullSemester"
+            nullable: true
