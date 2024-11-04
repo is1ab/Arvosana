@@ -5,11 +5,16 @@ meta {
 }
 
 get {
-  url: {{BASE_URL}}/grade/2024f/HW0
+  url: {{BASE_URL}}/grade/:semester/:homework_name
   body: none
   auth: none
 }
 
 params:query {
   ~csv: 1
+}
+
+params:path {
+  semester: 2024f
+  homework_name: HW0
 }
