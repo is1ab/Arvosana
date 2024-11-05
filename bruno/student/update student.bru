@@ -1,0 +1,23 @@
+meta {
+  name: update student
+  type: http
+  seq: 5
+}
+
+put {
+  url: /student/:old_semester/:old_student_id
+  body: json
+  auth: inherit
+}
+
+params:path {
+  old_semester: 2024f
+  old_student_id: 110590013
+}
+
+body:json {
+  {
+    "new_semester": "2024f",
+    "new_student_id": "110590012"
+  }
+}

@@ -1,0 +1,16 @@
+meta {
+  name: delete student
+  type: http
+  seq: 6
+}
+
+delete {
+  url: /student/:semester/:student_id
+  body: none
+  auth: inherit
+}
+
+params:path {
+  semester: 2024f
+  student_id: 110590013
+}

@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"net/http"
-	"time"
 
 	"github.com/is1ab/Arvosana/middleware"
 	"github.com/is1ab/Arvosana/service/db"
@@ -72,12 +71,9 @@ func RegisterStudent(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, "student_id required")
 		}
 
-		now := time.Now()
-
 		info, err := q.GetStudentInfo(ctx, db.GetStudentInfoParams{
 			Semester:  sem,
 			StudentID: data.StudentId,
-			Before:    types.NewDatetime(now),
 		})
 		if err != nil {
 			l.Errorln(err)
@@ -210,5 +206,5 @@ func RegisterStudent(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 		return c.NoContent(http.StatusOK)
-	})
+	}, middleware.Protected)
 }
