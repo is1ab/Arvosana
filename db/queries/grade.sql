@@ -18,7 +18,7 @@ VALUES (?, ?, ?, ?);
 -- name: GetGradeInfo :many
 SELECT
     student.student_id,
-    grade.grade
+    max(grade.grade) AS grade
 FROM homework
 CROSS JOIN student
 LEFT JOIN grade ON
@@ -28,4 +28,17 @@ WHERE
     homework.semester = ? AND
     homework.name = ?
 GROUP BY student.id
-ORDER BY student.student_id ASC;
+ORDER BY student.student_id ASC, grade.grade DESC;
+
+-- name: GetStudentSubmitHistory :many
+SELECT
+    grade.grade,
+    grade.submitted_at
+FROM grade
+INNER JOIN student ON grade.student_id = student.id
+INNER JOIN homework ON grade.homework_id = homework.id
+WHERE
+    homework.semester = ? AND
+    homework.name = ? AND
+    student.student_id = ?
+ORDER BY grade.submitted_at DESC;

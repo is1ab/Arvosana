@@ -27,7 +27,7 @@ WHERE semester = ?;
 SELECT
     homework.name,
     grade.submitted_at,
-    grade.grade
+    max(grade.grade) AS grade
 FROM homework
 CROSS JOIN student
 LEFT JOIN grade ON

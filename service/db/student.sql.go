@@ -78,7 +78,7 @@ const getStudentInfo = `-- name: GetStudentInfo :many
 SELECT
     homework.name,
     grade.submitted_at,
-    grade.grade
+    max(grade.grade) AS grade
 FROM homework
 CROSS JOIN student
 LEFT JOIN grade ON
@@ -99,7 +99,7 @@ type GetStudentInfoParams struct {
 type GetStudentInfoRow struct {
 	Name        string             `json:"name"`
 	SubmittedAt types.NullDatetime `json:"submitted_at"`
-	Grade       types.NullFloat64  `json:"grade"`
+	Grade       interface{}        `json:"grade"`
 }
 
 func (q *Queries) GetStudentInfo(ctx context.Context, arg GetStudentInfoParams) ([]GetStudentInfoRow, error) {

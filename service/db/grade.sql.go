@@ -14,7 +14,7 @@ import (
 const getGradeInfo = `-- name: GetGradeInfo :many
 SELECT
     student.student_id,
-    grade.grade
+    max(grade.grade) AS grade
 FROM homework
 CROSS JOIN student
 LEFT JOIN grade ON
@@ -24,7 +24,7 @@ WHERE
     homework.semester = ? AND
     homework.name = ?
 GROUP BY student.id
-ORDER BY student.student_id ASC
+ORDER BY student.student_id ASC, grade.grade DESC
 `
 
 type GetGradeInfoParams struct {
@@ -33,8 +33,8 @@ type GetGradeInfoParams struct {
 }
 
 type GetGradeInfoRow struct {
-	StudentID string            `json:"student_id"`
-	Grade     types.NullFloat64 `json:"grade"`
+	StudentID string      `json:"student_id"`
+	Grade     interface{} `json:"grade"`
 }
 
 func (q *Queries) GetGradeInfo(ctx context.Context, arg GetGradeInfoParams) ([]GetGradeInfoRow, error) {
@@ -47,6 +47,54 @@ func (q *Queries) GetGradeInfo(ctx context.Context, arg GetGradeInfoParams) ([]G
 	for rows.Next() {
 		var i GetGradeInfoRow
 		if err := rows.Scan(&i.StudentID, &i.Grade); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getStudentSubmitHistory = `-- name: GetStudentSubmitHistory :many
+SELECT
+    grade.grade,
+    grade.submitted_at
+FROM grade
+INNER JOIN student ON grade.student_id = student.id
+INNER JOIN homework ON grade.homework_id = homework.id
+WHERE
+    homework.semester = ? AND
+    homework.name = ? AND
+    student.student_id = ?
+ORDER BY grade.submitted_at DESC
+`
+
+type GetStudentSubmitHistoryParams struct {
+	Semester  types.Semester `json:"semester"`
+	Name      string         `json:"name"`
+	StudentID string         `json:"student_id"`
+}
+
+type GetStudentSubmitHistoryRow struct {
+	Grade       float64        `json:"grade"`
+	SubmittedAt types.Datetime `json:"submitted_at"`
+}
+
+func (q *Queries) GetStudentSubmitHistory(ctx context.Context, arg GetStudentSubmitHistoryParams) ([]GetStudentSubmitHistoryRow, error) {
+	rows, err := q.db.QueryContext(ctx, getStudentSubmitHistory, arg.Semester, arg.Name, arg.StudentID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetStudentSubmitHistoryRow{}
+	for rows.Next() {
+		var i GetStudentSubmitHistoryRow
+		if err := rows.Scan(&i.Grade, &i.SubmittedAt); err != nil {
 			return nil, err
 		}
 		items = append(items, i)
