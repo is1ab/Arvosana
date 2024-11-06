@@ -10,9 +10,7 @@ SET
 WHERE
     student_id = @old_studend_id AND semester = @old_semester;
 
-
 -- name: DeleteStudent :exec
-PRAGMA foreign_keys = ON;
 DELETE FROM student
 WHERE student_id = ? AND semester = ?;
 

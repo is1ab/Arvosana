@@ -28,7 +28,7 @@ WHERE
     homework.semester = ? AND
     homework.name = ?
 GROUP BY student.id
-ORDER BY student.student_id ASC, grade.grade DESC;
+ORDER BY student.student_id ASC;
 
 -- name: GetStudentSubmitHistory :many
 SELECT

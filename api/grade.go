@@ -128,6 +128,41 @@ func RegisterGrade(e *echo.Group) {
 		return c.JSON(http.StatusOK, info)
 	})
 
+	type GetSubmitHistory struct {
+		Semester     string `param:"semester"`
+		HomeworkName string `param:"homework_name"`
+		StudentId    string `param:"student_id"`
+	}
+
+	e.GET("/grade/:semester/:homework_name/:student_id", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		var data GetSubmitHistory
+		err := c.Bind(&data)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
+		}
+
+		sem, err := types.ParseSemester(data.Semester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		info, err := q.GetStudentSubmitHistory(ctx, db.GetStudentSubmitHistoryParams{
+			Semester:  sem,
+			Name:      data.HomeworkName,
+			StudentID: data.StudentId,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		return c.JSON(http.StatusOK, info)
+	})
+
 	type PostSubmitRequest struct {
 		StudentId    string   `json:"student_id"`
 		HomeworkName string   `json:"homework_name"`

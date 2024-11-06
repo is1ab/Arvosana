@@ -1,0 +1,17 @@
+meta {
+  name: get student submit history
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{BASE_URL}}/grade/:semester/:homework_name/:student_id
+  body: none
+  auth: none
+}
+
+params:path {
+  semester: 2024f
+  homework_name: HW0
+  student_id: 112590013
+}
