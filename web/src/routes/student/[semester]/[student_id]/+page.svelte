@@ -7,8 +7,8 @@
 </script>
 
 <h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
-	{data.data.semester.toUpperCase()}
-	{data.data.student_id}
+	{data.semester.toUpperCase()}
+	{data.student_id}
 </h1>
 
 <div class="my-6 w-full">
@@ -21,17 +21,28 @@
 		</Table.Header>
 
 		<Table.Body>
-			{#each data.data.info as i}
+			{#each data.info as i}
 				<Table.Row>
 					<Table.Cell>
 						<a
-							href={`/homework/${data.data.semester}/${i.name}`}
+							href={`/homework/${data.semester}/${i.name}`}
 							class="text-primary underline hover:text-primary/70"
 						>
 							{i.name}
 						</a>
 					</Table.Cell>
-					<Table.Cell>{i.grade ?? 'Not submitted'}</Table.Cell>
+					<Table.Cell>
+						{#if i.grade}
+							<a
+								href={`/student/${data.semester}/${i.name}/${data.student_id}`}
+								class="text-primary underline hover:text-primary/70"
+							>
+								{i.grade}
+							</a>
+						{:else}
+							Not submitted
+						{/if}
+					</Table.Cell>
 				</Table.Row>
 			{/each}
 		</Table.Body>

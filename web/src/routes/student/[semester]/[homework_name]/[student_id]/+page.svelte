@@ -8,15 +8,16 @@
 
 <h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
 	{data.semester.toUpperCase()}
-	{data.name}
+	{data.homework_name}
+	{data.student_id}
 </h1>
 
 <div class="my-6 w-full">
 	<Table.Root>
 		<Table.Header>
 			<Table.Row>
-				<Table.Head>Student ID</Table.Head>
 				<Table.Head>Grade</Table.Head>
+				<Table.Head>Submitted Time</Table.Head>
 			</Table.Row>
 		</Table.Header>
 
@@ -24,25 +25,9 @@
 			{#each data.info as i}
 				<Table.Row>
 					<Table.Cell>
-						<a
-							href={`/student/${data.semester}/${i.student_id}`}
-							class="text-primary underline hover:text-primary/70"
-						>
-							{i.student_id}
-						</a>
+						{i.grade}
 					</Table.Cell>
-					<Table.Cell>
-						{#if i.grade}
-							<a
-								href={`/student/${data.semester}/${data.name}/${i.student_id}`}
-								class="text-primary underline hover:text-primary/70"
-							>
-								{i.grade}
-							</a>
-						{:else}
-							Not submitted
-						{/if}
-					</Table.Cell>
+					<Table.Cell>{new Date(i.submitted_at * 1000).toLocaleString()}</Table.Cell>
 				</Table.Row>
 			{/each}
 		</Table.Body>

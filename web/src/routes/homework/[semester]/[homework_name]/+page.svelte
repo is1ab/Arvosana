@@ -31,7 +31,18 @@
 							{i.student_id}
 						</a>
 					</Table.Cell>
-					<Table.Cell>{i.grade ?? 'Not submitted'}</Table.Cell>
+					<Table.Cell>
+						{#if i.grade}
+							<a
+								href={`/student/${data.data.semester}/${data.data.name}/${i.student_id}`}
+								class="text-primary underline hover:text-primary/70"
+							>
+								{i.grade}
+							</a>
+						{:else}
+							Not submitted
+						{/if}
+					</Table.Cell>
 				</Table.Row>
 			{/each}
 		</Table.Body>

@@ -15,5 +15,5 @@ export const load: PageLoad = async ({ fetch }) => {
 	const res = await fetch(`/api/grade/latest`);
 	const data: LatestData = await res.json();
 
-	return { data };
+	return { ...data };
 };
