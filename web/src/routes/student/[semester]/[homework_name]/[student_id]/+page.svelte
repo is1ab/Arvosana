@@ -16,7 +16,7 @@
 	<Table.Root>
 		<Table.Header>
 			<Table.Row>
-				<Table.Head>Grade</Table.Head>
+				<Table.Head class="w-2/5">Grade</Table.Head>
 				<Table.Head>Submitted Time</Table.Head>
 			</Table.Row>
 		</Table.Header>
