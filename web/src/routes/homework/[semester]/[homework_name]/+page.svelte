@@ -6,10 +6,17 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
-	{data.data.semester.toUpperCase()}
-	{data.data.name}
-</h1>
+<div class="flex items-end justify-between">
+	<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
+		{data.semester.toUpperCase()}
+		{data.homework_name}
+	</h1>
+
+	<a href={`/homework/${data.semester}`} class="text-primary underline hover:text-primary/70">
+		{data.semester}
+		{' '} Homeworks
+	</a>
+</div>
 
 <div class="my-6 w-full">
 	<Table.Root>
@@ -21,11 +28,11 @@
 		</Table.Header>
 
 		<Table.Body>
-			{#each data.data.info as i}
+			{#each data.info as i}
 				<Table.Row>
 					<Table.Cell>
 						<a
-							href={`/student/${data.data.semester}/${i.student_id}`}
+							href={`/student/${data.semester}/${i.student_id}`}
 							class="text-primary underline hover:text-primary/70"
 						>
 							{i.student_id}
@@ -34,7 +41,7 @@
 					<Table.Cell>
 						{#if i.grade}
 							<a
-								href={`/student/${data.data.semester}/${data.data.name}/${i.student_id}`}
+								href={`/student/${data.semester}/${data.homework_name}/${i.student_id}`}
 								class="text-primary underline hover:text-primary/70"
 							>
 								{i.grade}

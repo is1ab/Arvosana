@@ -6,10 +6,17 @@
 	let { data }: { data: PageData } = $props();
 </script>
 
-<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
-	{data.semester.toUpperCase()}
-	{data.name}
-</h1>
+<div class="flex items-end justify-between">
+	<h1 class="scroll-m-20 text-4xl font-bold tracking-tight lg:text-5xl">
+		{data.semester.toUpperCase()}
+		{data.name}
+	</h1>
+
+	<a href={`/homework/${data.semester}`} class="text-primary underline hover:text-primary/70">
+		{data.semester}
+		{' '} Homeworks
+	</a>
+</div>
 
 <div class="my-6 w-full">
 	<Table.Root>
