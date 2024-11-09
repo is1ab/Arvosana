@@ -18,6 +18,12 @@ sql:
               type: "NullFloat64"
             nullable: true
 
+          - db_type: "TEXT"
+            go_type:
+              import: "github.com/is1ab/Arvosana/types"
+              type: "NullString"
+            nullable: true
+
           - db_type: "DATETIME_TEXT"
             go_type:
               import: "github.com/is1ab/Arvosana/types"

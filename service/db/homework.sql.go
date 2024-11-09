@@ -107,3 +107,36 @@ func (q *Queries) GetHomeworksFromSemester(ctx context.Context, semester types.S
 	}
 	return items, nil
 }
+
+const updateHomework = `-- name: UpdateHomework :exec
+UPDATE homework
+SET
+    name        = COALESCE(?1, name),
+    semester    = COALESCE(?2, semester),
+    begin_at    = COALESCE(?3, begin_at),
+    end_at      = COALESCE(?4, end_at)
+WHERE
+    semester = ?5 AND
+    name = ?6
+`
+
+type UpdateHomeworkParams struct {
+	NewName     types.NullString   `json:"new_name"`
+	NewSemester types.NullSemester `json:"new_semester"`
+	NewBeginAt  types.NullDatetime `json:"new_begin_at"`
+	NewEndAt    types.NullDatetime `json:"new_end_at"`
+	OldSemester types.Semester     `json:"old_semester"`
+	OldName     string             `json:"old_name"`
+}
+
+func (q *Queries) UpdateHomework(ctx context.Context, arg UpdateHomeworkParams) error {
+	_, err := q.db.ExecContext(ctx, updateHomework,
+		arg.NewName,
+		arg.NewSemester,
+		arg.NewBeginAt,
+		arg.NewEndAt,
+		arg.OldSemester,
+		arg.OldName,
+	)
+	return err
+}

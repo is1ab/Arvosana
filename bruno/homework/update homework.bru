@@ -1,0 +1,23 @@
+meta {
+  name: update homework
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{BASE_URL}}/homework/:old_semester/:old_name
+  body: json
+  auth: inherit
+}
+
+params:path {
+  old_semester: 2024f
+  old_name: HW0
+}
+
+body:json {
+  {
+    "new_begin_at": 1731153600,
+    "new_end_at": 1731168000
+  }
+}
