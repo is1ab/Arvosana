@@ -193,11 +193,7 @@ func RegisterStudent(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, err)
 		}
 
-		if data.StudentId == "" {
-			return echo.NewHTTPError(http.StatusBadRequest, "student_id required")
-		}
-
-		err = q.DeleteStudent(ctx, db.DeleteStudentParams{
+		r, err := q.DeleteStudent(ctx, db.DeleteStudentParams{
 			Semester:  sem,
 			StudentID: data.StudentId,
 		})
@@ -205,6 +201,10 @@ func RegisterStudent(e *echo.Group) {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
+		if r == 0 {
+			return echo.NewHTTPError(http.StatusNotFound)
+		}
+
 		return c.NoContent(http.StatusOK)
 	}, middleware.Protected)
 }

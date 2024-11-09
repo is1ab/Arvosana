@@ -10,7 +10,7 @@ SET
 WHERE
     student_id = @old_studend_id AND semester = @old_semester;
 
--- name: DeleteStudent :exec
+-- name: DeleteStudent :execrows
 DELETE FROM student
 WHERE student_id = ? AND semester = ?;
 

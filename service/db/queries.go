@@ -17,11 +17,6 @@ func NewQueries() (*Queries, error) {
 		return nil, err
 	}
 
-	_, err = conn.Exec("PRAGMA foreign_keys = ON;")
-	if err != nil {
-		return nil, err
-	}
-
 	return New(conn), nil
 }
 

@@ -26,7 +26,7 @@ func (q *Queries) AddStudent(ctx context.Context, arg AddStudentParams) error {
 	return err
 }
 
-const deleteStudent = `-- name: DeleteStudent :exec
+const deleteStudent = `-- name: DeleteStudent :execrows
 DELETE FROM student
 WHERE student_id = ? AND semester = ?
 `
@@ -36,9 +36,12 @@ type DeleteStudentParams struct {
 	Semester  types.Semester `json:"semester"`
 }
 
-func (q *Queries) DeleteStudent(ctx context.Context, arg DeleteStudentParams) error {
-	_, err := q.db.ExecContext(ctx, deleteStudent, arg.StudentID, arg.Semester)
-	return err
+func (q *Queries) DeleteStudent(ctx context.Context, arg DeleteStudentParams) (int64, error) {
+	result, err := q.db.ExecContext(ctx, deleteStudent, arg.StudentID, arg.Semester)
+	if err != nil {
+		return 0, err
+	}
+	return result.RowsAffected()
 }
 
 const getAllStudents = `-- name: GetAllStudents :many
