@@ -59,6 +59,39 @@ func RegisterHomework(e *echo.Group) {
 		return c.JSON(http.StatusOK, hws)
 	})
 
+	type GetHomeworkReqeust struct {
+		Semester string `param:"semester"`
+		Name     string `param:"name"`
+	}
+
+	e.GET("/homework/:semester/:name", func(c echo.Context) error {
+		ctx := c.Request().Context()
+		l := logger.Ctx(ctx)
+		q := db.Ctx(ctx)
+
+		var data GetHomeworkReqeust
+		err := c.Bind(&data)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
+		}
+
+		sem, err := types.ParseSemester(data.Semester)
+		if err != nil {
+			return echo.NewHTTPError(http.StatusBadRequest, err)
+		}
+
+		info, err := q.GetHomeworkInfo(ctx, db.GetHomeworkInfoParams{
+			Semester: sem,
+			Name:     data.Name,
+		})
+		if err != nil {
+			l.Errorln(err)
+			return echo.NewHTTPError(http.StatusInternalServerError)
+		}
+
+		return c.JSON(http.StatusOK, info)
+	})
+
 	type PostHomeworkRequest struct {
 		Name     string `json:"name"`
 		Semester string `json:"semester"`

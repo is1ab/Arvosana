@@ -30,37 +30,36 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
-		name := ""
+		var latestHw db.GetHomeworksFromSemesterRow
 		// find most recently started homework
 		for _, hw := range hws {
-			l.Debugln(hw.Name)
 			if now.Compare(hw.BeginAt.Time()) > 0 {
-				name = hw.Name
+				latestHw = hw
 				break
 			}
 		}
 
-		if name == "" {
+		if latestHw.Name == "" {
 			l.Errorln("no recent homeworks")
 			return echo.NewHTTPError(http.StatusNotFound)
 		}
 
 		info, err := q.GetGradeInfo(ctx, db.GetGradeInfoParams{
 			Semester: sem,
-			Name:     name,
+			Name:     latestHw.Name,
 		})
 		if err != nil {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
-		data := map[string]any{
+		return c.JSON(http.StatusOK, map[string]any{
 			"semester": sem,
-			"name":     name,
+			"name":     latestHw.Name,
+			"begin_at": latestHw.BeginAt.Time().Unix(),
+			"end_at":   latestHw.EndAt.Time().Unix(),
 			"info":     info,
-		}
-
-		return c.JSON(http.StatusOK, data)
+		})
 	})
 
 	type GetGradeInfoRequest struct {

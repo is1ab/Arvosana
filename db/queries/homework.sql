@@ -21,3 +21,9 @@ WHERE
 SELECT name, begin_at, end_at FROM homework
 WHERE semester = ?
 ORDER BY begin_at DESC;
+
+-- name: GetHomeworkInfo :one
+SELECT semester, name, begin_at, end_at FROM homework
+WHERE
+    semester = ? AND
+    name = ?;

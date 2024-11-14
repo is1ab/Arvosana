@@ -2,7 +2,9 @@
 	import type { PageData } from './$types';
 
 	import * as Table from '$lib/components/ui/table';
+	import { Separator } from '$lib/components/ui/separator';
 
+	// TODO: add charts
 	let { data }: { data: PageData } = $props();
 </script>
 
@@ -17,6 +19,20 @@
 		{' '} Homeworks
 	</a>
 </div>
+
+<div class="my-6 flex justify-between text-muted-foreground">
+	<p>
+		{new Date(data.begin_at * 1000).toLocaleString()}
+		-
+		{new Date(data.end_at * 1000).toLocaleString()}
+	</p>
+
+	<p>
+		{data.submitted}/{data.info.length} Submitted
+	</p>
+</div>
+
+<Separator />
 
 <div class="my-6 w-full">
 	<Table.Root>

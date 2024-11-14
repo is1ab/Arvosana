@@ -73,6 +73,37 @@ func (q *Queries) GetAllHomeworks(ctx context.Context) ([]GetAllHomeworksRow, er
 	return items, nil
 }
 
+const getHomeworkInfo = `-- name: GetHomeworkInfo :one
+SELECT semester, name, begin_at, end_at FROM homework
+WHERE
+    semester = ? AND
+    name = ?
+`
+
+type GetHomeworkInfoParams struct {
+	Semester types.Semester `json:"semester"`
+	Name     string         `json:"name"`
+}
+
+type GetHomeworkInfoRow struct {
+	Semester types.Semester `json:"semester"`
+	Name     string         `json:"name"`
+	BeginAt  types.Datetime `json:"begin_at"`
+	EndAt    types.Datetime `json:"end_at"`
+}
+
+func (q *Queries) GetHomeworkInfo(ctx context.Context, arg GetHomeworkInfoParams) (GetHomeworkInfoRow, error) {
+	row := q.db.QueryRowContext(ctx, getHomeworkInfo, arg.Semester, arg.Name)
+	var i GetHomeworkInfoRow
+	err := row.Scan(
+		&i.Semester,
+		&i.Name,
+		&i.BeginAt,
+		&i.EndAt,
+	)
+	return i, err
+}
+
 const getHomeworksFromSemester = `-- name: GetHomeworksFromSemester :many
 SELECT name, begin_at, end_at FROM homework
 WHERE semester = ?

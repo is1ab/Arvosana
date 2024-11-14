@@ -1,15 +1,16 @@
 meta {
-  name: get homework by semester
+  name: get homework info
   type: http
-  seq: 3
+  seq: 4
 }
 
 get {
-  url: {{BASE_URL}}/homework/:semester
+  url: {{BASE_URL}}/homework/:semester/:name
   body: none
   auth: none
 }
 
 params:path {
   semester: 2024f
+  name: HW0
 }
