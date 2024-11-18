@@ -65,6 +65,7 @@ func RegisterGrade(e *echo.Group) {
 	type GetGradeInfoRequest struct {
 		Semester     string `param:"semester"`
 		HomeworkName string `param:"homework_name"`
+		Csv          string `query:"csv"`
 	}
 
 	e.GET("/grade/:semester/:homework_name", func(c echo.Context) error {
@@ -72,13 +73,13 @@ func RegisterGrade(e *echo.Group) {
 		l := logger.Ctx(ctx)
 		q := db.Ctx(ctx)
 
-		exportCsv := c.QueryParam("csv") == "1"
-
 		var data GetGradeInfoRequest
 		err := c.Bind(&data)
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
 		}
+
+		exportCsv := data.Csv == "1"
 
 		sem, err := types.ParseSemester(data.Semester)
 		if err != nil {
@@ -168,6 +169,7 @@ func RegisterGrade(e *echo.Group) {
 		Semester     string   `json:"semester"`
 		SubmittedAt  int64    `json:"submitted_at"`
 		Grade        *float64 `json:"grade"` // need to separate actual 0 from null values
+		DisableCheck bool     `json:"disable_check,omitempty"`
 	}
 
 	e.POST("/submit", func(c echo.Context) error {
@@ -210,12 +212,14 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
-		if submittedAt.Before(info.BeginAt.Time()) {
-			return echo.NewHTTPError(http.StatusForbidden, "not yet open")
-		}
+		if !data.DisableCheck {
+			if submittedAt.Before(info.BeginAt.Time()) {
+				return echo.NewHTTPError(http.StatusForbidden, "not yet open")
+			}
 
-		if submittedAt.After(info.EndAt.Time()) {
-			return echo.NewHTTPError(http.StatusForbidden, "deadline exceeded")
+			if submittedAt.After(info.EndAt.Time()) {
+				return echo.NewHTTPError(http.StatusForbidden, "deadline exceeded")
+			}
 		}
 
 		err = q.SubmitGrade(ctx, db.SubmitGradeParams{
