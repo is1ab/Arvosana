@@ -12,6 +12,7 @@ func RegisterUtil(e *echo.Group) {
 		l := logger.Ctx(ctx)
 		s := sse.Ctx(ctx)
 
+		l.Debugf("client connected: %s", c.RealIP())
 		go func() {
 			<-c.Request().Context().Done()
 			l.Debugf("client disconnected: %s", c.RealIP())
