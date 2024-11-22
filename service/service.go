@@ -10,15 +10,18 @@ import (
 	"github.com/is1ab/Arvosana/api"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
+	"github.com/is1ab/Arvosana/service/sse"
 	"github.com/is1ab/Arvosana/web"
 	"github.com/labstack/echo/v4"
 	mw "github.com/labstack/echo/v4/middleware"
+	s "github.com/r3labs/sse/v2"
 	"go.uber.org/zap"
 )
 
 type Service struct {
 	router *echo.Echo
 	logger *zap.SugaredLogger
+	sse    *s.Server
 	ctx    context.Context
 }
 
@@ -29,10 +32,12 @@ func NewService() (*Service, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to DB")
 	}
+	s := sse.NewSseServer()
 
 	ctx := context.Background()
 	ctx = logger.WithContext(ctx, l)
 	ctx = db.WithContext(ctx, q)
+	ctx = sse.WithContext(ctx, s)
 
 	e.Use(mw.CORS())
 
@@ -67,10 +72,12 @@ func NewService() (*Service, error) {
 	api.RegisterHomework(apiGroup)
 	api.RegisterStudent(apiGroup)
 	api.RegisterGrade(apiGroup)
+	api.RegisterUtil(apiGroup)
 
 	return &Service{
 		router: e,
 		logger: l,
+		sse:    s,
 		ctx:    ctx,
 	}, nil
 }
@@ -90,6 +97,8 @@ func (s *Service) Shutdown() error {
 	var err error
 	ctx, cancel := context.WithTimeout(s.ctx, timeout)
 	defer cancel()
+
+	sse.Close(s.sse)
 
 	err2 := s.router.Shutdown(ctx)
 	err = errors.Join(err, fmt.Errorf("error shutting down: %w", err2))
