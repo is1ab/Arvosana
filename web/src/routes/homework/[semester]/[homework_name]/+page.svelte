@@ -3,8 +3,24 @@
 
 	import * as Table from '$lib/components/ui/table';
 	import { Separator } from '$lib/components/ui/separator';
+	import { onMount } from 'svelte';
+	import { dev } from '$app/environment';
+	import { invalidateAll } from '$app/navigation';
 
 	let { data }: { data: PageData } = $props();
+
+	onMount(() => {
+		// HACK: vite proxy doesn't work with this
+		const host = dev ? 'http://127.0.0.1:8080' : '';
+		const evtSrc = new window.EventSource(host + '/api/sse?stream=submit');
+
+		evtSrc.onmessage = () => {
+			// TODO: maybe add debounce?
+			invalidateAll();
+		};
+
+		return () => evtSrc.close();
+	});
 </script>
 
 <div class="flex items-end justify-between">

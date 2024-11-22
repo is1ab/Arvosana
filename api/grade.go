@@ -11,6 +11,7 @@ import (
 	"github.com/is1ab/Arvosana/middleware"
 	"github.com/is1ab/Arvosana/service/db"
 	"github.com/is1ab/Arvosana/service/logger"
+	"github.com/is1ab/Arvosana/service/sse"
 	"github.com/is1ab/Arvosana/types"
 	"github.com/labstack/echo/v4"
 )
@@ -176,6 +177,7 @@ func RegisterGrade(e *echo.Group) {
 		ctx := c.Request().Context()
 		l := logger.Ctx(ctx)
 		q := db.Ctx(ctx)
+		s := sse.Ctx(ctx)
 
 		var data PostSubmitRequest
 		err := c.Bind(&data)
@@ -234,6 +236,10 @@ func RegisterGrade(e *echo.Group) {
 			l.Errorln(err)
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
+
+		s.Publish(sse.SUBMIT_STREAM, &sse.Event{
+			Data: []byte("reload"),
+		})
 
 		return c.NoContent(http.StatusCreated)
 	}, middleware.Protected)
