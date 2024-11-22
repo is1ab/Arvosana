@@ -164,12 +164,12 @@ func RegisterGrade(e *echo.Group) {
 	})
 
 	type PostSubmitRequest struct {
+		DisableCheck string   `query:"disable_check,omitempty"`
 		StudentId    string   `json:"student_id"`
 		HomeworkName string   `json:"homework_name"`
 		Semester     string   `json:"semester"`
 		SubmittedAt  int64    `json:"submitted_at"`
 		Grade        *float64 `json:"grade"` // need to separate actual 0 from null values
-		DisableCheck bool     `json:"disable_check,omitempty"`
 	}
 
 	e.POST("/submit", func(c echo.Context) error {
@@ -182,6 +182,8 @@ func RegisterGrade(e *echo.Group) {
 		if err != nil {
 			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
 		}
+
+		disableCheck := data.DisableCheck == "1"
 
 		if data.StudentId == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "student_id required")
@@ -212,7 +214,7 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusInternalServerError)
 		}
 
-		if !data.DisableCheck {
+		if !disableCheck {
 			if submittedAt.Before(info.BeginAt.Time()) {
 				return echo.NewHTTPError(http.StatusForbidden, "not yet open")
 			}
