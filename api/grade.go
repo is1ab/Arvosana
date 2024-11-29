@@ -165,7 +165,6 @@ func RegisterGrade(e *echo.Group) {
 	})
 
 	type PostSubmitRequest struct {
-		DisableCheck string   `query:"disable_check,omitempty"`
 		StudentId    string   `json:"student_id"`
 		HomeworkName string   `json:"homework_name"`
 		Semester     string   `json:"semester"`
@@ -185,7 +184,7 @@ func RegisterGrade(e *echo.Group) {
 			return echo.NewHTTPError(http.StatusBadRequest, errors.Unwrap(err))
 		}
 
-		disableCheck := data.DisableCheck == "1"
+		disableCheck := c.QueryParam("disable_check") == "1"
 
 		if data.StudentId == "" {
 			return echo.NewHTTPError(http.StatusBadRequest, "student_id required")
