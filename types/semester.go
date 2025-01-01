@@ -30,16 +30,19 @@ type Semester struct {
 }
 
 func TimeToSemester(t time.Time) Semester {
-	if t.Month() >= time.September {
-		return Semester{
-			year:   t.Year(),
-			period: Fall,
-		}
-	} else {
+	switch t.Month() {
+	case time.February, time.March, time.April, time.May, time.June, time.July:
 		return Semester{
 			year:   t.Year() - 1,
 			period: Spring,
 		}
+	case time.August, time.September, time.October, time.November, time.December, time.January:
+		return Semester{
+			year:   t.Year(),
+			period: Fall,
+		}
+	default:
+		panic("impossible case: sum type in golang when")
 	}
 }
 
