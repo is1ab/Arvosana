@@ -37,7 +37,7 @@ func TimeToSemester(t time.Time) Semester {
 		}
 	} else {
 		return Semester{
-			year:   t.Year(),
+			year:   t.Year() - 1,
 			period: Spring,
 		}
 	}
