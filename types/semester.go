@@ -31,12 +31,17 @@ type Semester struct {
 
 func TimeToSemester(t time.Time) Semester {
 	switch t.Month() {
+	case time.January:
+		return Semester{
+			year:   t.Year() - 1,
+			period: Fall,
+		}
 	case time.February, time.March, time.April, time.May, time.June, time.July:
 		return Semester{
 			year:   t.Year() - 1,
 			period: Spring,
 		}
-	case time.August, time.September, time.October, time.November, time.December, time.January:
+	case time.August, time.September, time.October, time.November, time.December:
 		return Semester{
 			year:   t.Year(),
 			period: Fall,
